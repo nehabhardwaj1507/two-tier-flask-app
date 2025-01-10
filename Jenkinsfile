@@ -13,7 +13,6 @@ pipeline {
        }
        stage("Build & Test") {
            steps {
-                      
             sh "docker build -t flaskimg:latest ." 
            echo "Code is built and tested"
            }
