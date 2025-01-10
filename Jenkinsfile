@@ -1,30 +1,46 @@
 pipeline {
-    agent any
-    
-    stages{
-        stage("Code"){
-            steps{
-                git url: "https://github.com/LondheShubham153/two-tier-flask-app.git", branch: "jenkins"
-            }
+    agent {
+        node {
+            label "Dev"
         }
-        stage("Build & Test"){
-            steps{
-                sh "docker build . -t flaskapp"
-            }
-        }
-        stage("Push to DockerHub"){
-            steps{
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                    sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                    sh "docker tag flaskapp ${env.dockerHubUser}/flaskapp:latest"
-                    sh "docker push ${env.dockerHubUser}/flaskapp:latest" 
+    }
+    stages {
+       stage("Code") {
+           steps {
+            git url: "https://github.com/nehabhardwaj1507/two-tier-flask-app.git", branch: "master"
+           echo "Code is clonned"
+           }
+       }
+       stage("Build & Test") {
+           steps {
+                      
+            sh "docker build -t FlaskImg:latest ." 
+           echo "Code is built and tested"
+           }
+       }
+       stage("Credentials") {
+           steps {
+                echo "Credentials for username and Password added"
+                withCredentials(
+                    [usernamePassword(
+                        credentialsId: "dockerhubcreds", 
+                        passwordVariable: "dockerHubPass", 
+                        usernameVariable: "dockerHubUser"
+                        )
+                    ]
+                )
+                {
+                sh "docker image tag FlaskImg:latest ${env.dockerHubUser}/FlaskImg-jenkins:latest"
+                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                sh "docker push ${env.dockerHubUser}/FlaskImg-jenkins:latest"
                 }
-            }
-        }
-        stage("Deploy"){
-            steps{
+           }
+       }
+       stage("Deploy") {
+           steps {
                 sh "docker-compose down && docker-compose up -d"
-            }
-        }
+                echo "Application is deployed"
+           }
+       }
     }
 }
