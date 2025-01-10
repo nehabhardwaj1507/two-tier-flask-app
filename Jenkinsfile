@@ -14,7 +14,7 @@ pipeline {
        stage("Build & Test") {
            steps {
                       
-            sh "docker build -t FlaskImg:latest ." 
+            sh "docker build -t flaskimg:latest ." 
            echo "Code is built and tested"
            }
        }
@@ -30,9 +30,9 @@ pipeline {
                     ]
                 )
                 {
-                sh "docker image tag FlaskImg:latest ${env.dockerHubUser}/FlaskImg-jenkins:latest"
+                sh "docker image tag flaskimg:latest ${env.dockerHubUser}/flaskimg-jenkins:latest"
                 sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
-                sh "docker push ${env.dockerHubUser}/FlaskImg-jenkins:latest"
+                sh "docker push ${env.dockerHubUser}/flaskimg-jenkins:latest"
                 }
            }
        }
