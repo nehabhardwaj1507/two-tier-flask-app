@@ -13,7 +13,7 @@ pipeline {
        }
        stage("Build & Test") {
            steps {
-            sh "sudo docker build -t flaskimg:latest ." 
+            sh "docker build -t flaskimg:latest ." 
            echo "Code is built and tested"
            }
        }
@@ -37,7 +37,7 @@ pipeline {
        }
        stage("Deploy") {
            steps {
-                sh "sudo docker-compose down && docker-compose up -d"
+                sh "docker-compose down && docker-compose up -d"
                 echo "Application is deployed"
            }
        }
