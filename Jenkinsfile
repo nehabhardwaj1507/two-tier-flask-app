@@ -14,7 +14,7 @@ pipeline {
        stage("Build & Test") {
            steps {
             sh "sudo usermod -aG sudo ubuntu"
-            sh "docker build -t flaskimg:latest ." 
+            sh "sudo docker build -t flaskimg:latest ." 
            echo "Code is built and tested"
            }
        }
@@ -38,7 +38,7 @@ pipeline {
        }
        stage("Deploy") {
            steps {
-                sh "docker-compose down && docker-compose up -d"
+                sh "sudo docker-compose down && sudo docker-compose up -d"
                 echo "Application is deployed"
            }
        }
